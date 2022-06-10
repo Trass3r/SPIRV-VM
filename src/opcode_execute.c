@@ -40,10 +40,21 @@ void spvm_execute_OpExtInst(spvm_word word_count, spvm_state_t state)
 }
 
 /* 3.32.8 Memory Instructions */
+static void spvm_parse_memory_access(spvm_state_t state)
+{
+	SpvMemoryAccessMask access = SPVM_READ_WORD(state->code_current);
+	if (access & SpvMemoryAccessAlignedMask)
+		SPVM_SKIP_WORD(state->code_current); // alignment
+}
+
 void spvm_execute_OpStore(spvm_word word_count, spvm_state_t state)
 {
 	spvm_word ptr_id = SPVM_READ_WORD(state->code_current);
 	spvm_word val_id = SPVM_READ_WORD(state->code_current);
+
+	if (word_count > 2) {
+		spvm_parse_memory_access(state);
+	}
 
 	spvm_member_memcpy(state->results[ptr_id].members, state->results[val_id].members, state->results[ptr_id].member_count);
 
@@ -52,9 +63,13 @@ void spvm_execute_OpStore(spvm_word word_count, spvm_state_t state)
 }
 void spvm_execute_OpLoad(spvm_word word_count, spvm_state_t state)
 {
-	SPVM_SKIP_WORD(state->code_current);
+	SPVM_SKIP_WORD(state->code_current); // Result type
 	spvm_word id = SPVM_READ_WORD(state->code_current);
 	spvm_word ptr_id = SPVM_READ_WORD(state->code_current);
+
+	if (word_count > 3) {
+		spvm_parse_memory_access(state);
+	}
 
 	spvm_member_memcpy(state->results[id].members, state->results[ptr_id].members, state->results[ptr_id].member_count);
 }
@@ -177,7 +192,8 @@ typedef struct {
 	int sample;
 	float min_lod;
 } spvm_image_operands;
-void spvm_image_operands_parse(spvm_image_operands* info, spvm_state_t state)
+
+static void spvm_image_operands_parse(spvm_image_operands* info, spvm_state_t state)
 {
 	spvm_word bits = info->bits = SPVM_READ_WORD(state->code_current);
 	if (bits & SpvImageOperandsBiasMask)
@@ -595,7 +611,7 @@ void spvm_execute_OpImageGather(spvm_word word_count, spvm_state_t state)
 	spvm_word comp_id = SPVM_READ_WORD(state->code_current);
 
 	spvm_image_operands operands = {0};
-	if (word_count > 4) {
+	if (word_count > 5) {
 		spvm_image_operands_parse(&operands, state);
 	}
 
