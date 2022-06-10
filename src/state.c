@@ -76,7 +76,7 @@ spvm_result_t spvm_state_get_type_info(spvm_result_t res_list, spvm_result_t res
 		return spvm_state_get_type_info(res_list, &res_list[res->pointer]);
 	return res;
 }
-void spvm_state_set_extension(spvm_state_t state, const spvm_string name, spvm_ext_opcode_func* ext)
+void spvm_state_set_extension(spvm_state_t state, const char* name, spvm_ext_opcode_func* ext)
 {
 	spvm_result_t ptr = spvm_state_get_result(state, name);
 	if (ptr) ptr->extension = ext;
@@ -365,7 +365,7 @@ spvm_result_t spvm_state_get_local_result(spvm_state_t state, spvm_result_t fn, 
 
 	return NULL;
 }
-spvm_word spvm_state_get_result_location(spvm_state_t state, const spvm_string str)
+spvm_word spvm_state_get_result_location(spvm_state_t state, const char* str)
 {
 	for (spvm_word i = 0; i < state->owner->bound; i++)
 		if (state->results[i].name != NULL && strcmp(state->results[i].name, str) == 0 && state->results[i].owner == NULL)
@@ -373,7 +373,7 @@ spvm_word spvm_state_get_result_location(spvm_state_t state, const spvm_string s
 
 	return 0;
 }
-spvm_result_t spvm_state_get_result(spvm_state_t state, const spvm_string str)
+spvm_result_t spvm_state_get_result(spvm_state_t state, const char* str)
 {
 	for (spvm_word i = 0; i < state->owner->bound; i++)
 		if (state->results[i].name != NULL && strcmp(state->results[i].name, str) == 0 && state->results[i].owner == NULL)
@@ -381,7 +381,7 @@ spvm_result_t spvm_state_get_result(spvm_state_t state, const spvm_string str)
 
 	return NULL;
 }
-spvm_result_t spvm_state_get_result_with_value(spvm_state_t state, const spvm_string str)
+spvm_result_t spvm_state_get_result_with_value(spvm_state_t state, const char* str)
 {
 	for (spvm_word i = 0; i < state->owner->bound; i++)
 		if (state->results[i].name != NULL && strcmp(state->results[i].name, str) == 0 && state->results[i].owner == NULL && state->results[i].members != NULL)

@@ -36,7 +36,7 @@ void spvm_image_write(struct spvm_state* state, spvm_image* image,
 	state->write_image(state, image, x, y, z, layer, level, data);
 }
 
-unsigned spvm_image_texel_id(struct spvm_image* image,
+static unsigned spvm_image_texel_id(struct spvm_image* image,
 	int x, int y, int z, int layer, int level)
 {
 	unsigned width = image->width;
@@ -83,13 +83,13 @@ void spvm_image_write_impl(struct spvm_state* state, struct spvm_image* image,
 // https://www.khronos.org/registry/vulkan/specs/1.2-extensions/html/chap16.html#textures-texel-filtering
 // There are a lot of corner cases we are not handling currently.
 
-int spvm_util_mirror(int n)
+static int spvm_util_mirror(int n)
 {
 	return (n >= 0) ? n : -(1 + n);
 }
 
 // Returns -1 for border.
-int spvm_apply_address_mode(spvm_sampler_address_mode mode, int val, int size)
+static int spvm_apply_address_mode(spvm_sampler_address_mode mode, int val, int size)
 {
 	switch(mode)
 	{
@@ -109,7 +109,7 @@ int spvm_apply_address_mode(spvm_sampler_address_mode mode, int val, int size)
 	return -1;
 }
 
-float spvm_frac(float val)
+static float spvm_frac(float val)
 {
 	double iptr;
 	return modf(val, &iptr);

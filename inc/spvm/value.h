@@ -16,8 +16,7 @@ extern "C" {
 #define SPVM_NCLAMP(x, minVal, maxVal) SPVM_NMIN(SPVM_NMAX((x), (minVal)), (maxVal))
 #define SPVM_SIGN(x) ((x) > 0) - ((x) < 0)
 
-enum spvm_value_type
-{
+typedef enum spvm_value_type {
 	spvm_value_type_void,
 	spvm_value_type_bool,
 	spvm_value_type_int,
@@ -31,10 +30,10 @@ enum spvm_value_type
 	spvm_value_type_sampler,
 	spvm_value_type_sampled_image,
 	spvm_value_type_pointer
-};
+} spvm_value_type;
 
 typedef struct spvm_member {
-	spvm_word type;
+	spvm_word type; // id
 
 	union spvm_value
 	{

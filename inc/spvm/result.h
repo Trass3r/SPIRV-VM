@@ -10,7 +10,7 @@ extern "C" {
 #include <spvm/spirv.h>
 #include <spvm/opcode.h>
 
-enum spvm_result_type {
+typedef enum spvm_result_type {
 	spvm_result_type_none,
 	spvm_result_type_string,
 	spvm_result_type_extension,
@@ -22,7 +22,7 @@ enum spvm_result_type {
 	spvm_result_type_access_chain,
 	spvm_result_type_function_parameter,
 	spvm_result_type_label
-};
+} spvm_result_type;
 typedef struct spvm_image_info {
 	SpvDim dim;
 	spvm_byte depth;
@@ -38,7 +38,7 @@ typedef struct spvm_decoration {
 	spvm_word index; // member
 } spvm_decoration;
 typedef struct spvm_result {
-	char type;
+	spvm_result_type type;
 
 	spvm_string name;
 	spvm_word pointer; // pointer to spvm_result
@@ -55,7 +55,7 @@ typedef struct spvm_result {
 	spvm_decoration* decorations;
 
 	/* spvm_result_type_function */
-	spvm_word return_type;
+	spvm_word return_type; // id
 
 	/* spvm_result_type_extension */
 	spvm_word extension_name; // index in the spvm_program::imports
@@ -71,7 +71,7 @@ typedef struct spvm_result {
 	spvm_word source_word_count;
 
 	/* op type */
-	char value_type;
+	spvm_value_type value_type;
 	spvm_word value_bitcount;
 	char value_sign;
 	spvm_image_info* image_info;
